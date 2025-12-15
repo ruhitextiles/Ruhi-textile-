@@ -1,0 +1,1098 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Ruhi Textiles</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        /* --- THEME VARIABLES --- */
+        :root {
+            --bg-color: #050505;
+            --text-color: #ffffff;
+            --main-accent: #00d9ff;
+            --secondary-bg: #121212;
+            --card-bg: #1e1e1e;
+            --border-color: #333;
+            --text-light: #aaa;
+            --glass-bg: rgba(20, 20, 20, 0.9);
+        }
+
+        .light-mode {
+            --bg-color: #f4f4f8; 
+            --text-color: #1a1a1a; 
+            --main-accent: #800000;
+            --secondary-bg: #ffffff; 
+            --card-bg: #ffffff; 
+            --border-color: #e0e0e0; 
+            --text-light: #666;
+            --glass-bg: rgba(255, 255, 255, 0.95);
+        }
+
+        /* --- RESET --- */
+        * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; outline: none; }
+        body { 
+            margin: 0; padding: 0; 
+            background-color: var(--bg-color); 
+            color: var(--text-color); 
+            font-family: 'Segoe UI', sans-serif; 
+            height: 100vh; width: 100vw; 
+            overflow: hidden; 
+            transition: background-color 0.3s;
+        }
+        
+        /* --- SPLASH SCREEN STYLES (Based on your image look) --- */
+        #splashScreen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(145deg, #020015 0%, #000000 70%); /* Dark gradient background */
+            z-index: 9999;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            transition: opacity 0.5s;
+            overflow: hidden;
+            
+            /* Background particle/wave effect imitation */
+            box-shadow: inset 0 0 100px rgba(0, 200, 255, 0.2), inset 0 0 50px rgba(255, 200, 0, 0.2);
+        }
+        
+        /* Dynamic Wave/Particle Container */
+        #splashScreen::before, #splashScreen::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(0, 200, 255, 0.3) 0%, transparent 20%),
+                        radial-gradient(circle, rgba(255, 200, 0, 0.3) 0%, transparent 20%);
+            background-size: 20px 20px;
+            animation: wave-motion 15s linear infinite;
+            z-index: -1;
+            opacity: 0.5;
+        }
+        #splashScreen::after {
+            background-size: 30px 30px;
+            animation: wave-motion-reverse 20s linear infinite;
+        }
+
+        @keyframes wave-motion {
+            0% { transform: translate(0, 0); }
+            100% { transform: translate(-50%, -50%); }
+        }
+        @keyframes wave-motion-reverse {
+            0% { transform: translate(-50%, -50%); }
+            100% { transform: translate(0, 0); }
+        }
+        
+        .splash-content {
+            text-align: center;
+            opacity: 0;
+            transform: scale(0.9);
+            animation: logo-reveal 1.5s cubic-bezier(0.2, 0.8, 0.2, 1) 0.5s forwards;
+            z-index: 10;
+        }
+        
+        .splash-logo-text {
+            font-size: 48px;
+            font-weight: 900;
+            color: #fff; /* White for premium look */
+            letter-spacing: 5px;
+            margin-bottom: 5px;
+            /* Text shadow mimicking glow */
+            text-shadow: 0 0 5px var(--main-accent), 0 0 10px rgba(0, 200, 255, 0.5);
+            font-family: serif; /* For elegant look */
+        }
+        
+        .splash-tagline {
+            font-size: 18px;
+            color: var(--main-accent);
+            letter-spacing: 2px;
+            font-weight: 300;
+        }
+        
+        @keyframes logo-reveal {
+            0% { opacity: 0; transform: scale(0.9); }
+            100% { opacity: 1; transform: scale(1); }
+        }
+        
+        /* --- HEADER --- */
+        .header {
+            position: fixed; top: 0; left: 0; width: 100%; height: 60px;
+            background: var(--secondary-bg); 
+            display: flex; align-items: center; padding: 0 15px; z-index: 1000;
+            border-bottom: 1px solid var(--border-color);
+        }
+        .icon { 
+            font-size: 22px; color: var(--main-accent); cursor: pointer; 
+            width: 40px; height: 40px; display: flex; align-items: center; justify-content: center;
+        }
+        .title { font-size: 18px; font-weight: bold; flex: 1; color: var(--text-color); margin-left: 10px; }
+        
+        /* Sidebar Hamburger/Close Button Styles */
+        .hamburger span { display: block; width: 20px; height: 2px; background: var(--main-accent); margin: 4px 0; transition: 0.3s; }
+        .hamburger.is-active span:nth-child(1) { transform: rotate(45deg) translate(5px, 5px); }
+        .hamburger.is-active span:nth-child(2) { opacity: 0; }
+        .hamburger.is-active span:nth-child(3) { transform: rotate(-45deg) translate(5px, -5px); }
+        
+        .hamburger.is-active {
+            /* Change hamburger to X visually in one element */
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .hamburger.is-active::before {
+            content: "\f00d"; /* Font Awesome X icon */
+            font-family: "Font Awesome 6 Free";
+            font-weight: 900;
+            font-size: 20px;
+            color: var(--main-accent);
+            position: absolute;
+            opacity: 0; /* Hidden by default */
+            transition: opacity 0.3s;
+        }
+        .hamburger.is-active span {
+            opacity: 0; /* Hide bars when active */
+        }
+        .hamburger.is-active::before {
+             opacity: 1; /* Show X icon when active */
+        }
+
+        /* --- MARQUEE --- */
+        .marquee-bar { 
+            position: fixed; top: 60px; left: 0; width: 100%; height: 30px; 
+            background: var(--main-accent); z-index: 900; 
+            overflow: hidden; display: flex; align-items: center;
+        }
+        .marquee-text { color: #fff; font-size: 12px; white-space: nowrap; animation: marquee 15s linear infinite; }
+        @keyframes marquee { 0% { transform: translateX(100%); } 100% { transform: translateX(-100%); } }
+
+        /* --- SCREENS --- */
+        .app-screen {
+            position: fixed; top: 90px; left: 0; width: 100%; height: calc(100vh - 90px); 
+            overflow-y: auto; background-color: var(--bg-color); 
+            padding: 15px 15px 100px 15px; display: none; z-index: 10;
+            transition: top 0.3s, height 0.3s; /* Smooth transition when marquee hides */
+        }
+        /* Class to adjust screen when marquee is hidden */
+        .no-marquee-screen {
+            top: 60px !important;
+            height: calc(100vh - 60px) !important;
+        }
+        /* Removed display:block from #screen-home to ensure splash loads first */
+
+        .section-title { 
+            color: var(--main-accent); border-left: 4px solid var(--text-color); 
+            padding-left: 10px; margin: 20px 0 10px 0; font-size: 18px; font-weight: bold;
+            display: flex; align-items: center; justify-content: space-between;
+            position: relative; 
+        }
+
+        .banner { 
+            width: 100%; height: 160px; 
+            background: var(--card-bg); border-radius: 12px; margin-bottom: 15px; 
+            overflow: hidden; border: 1px solid var(--border-color); 
+        }
+        .banner img { width: 100%; height: 100%; object-fit: cover; }
+
+        /* --- QUICK LINKS --- */
+        .quick-links { display: flex; gap: 10px; margin: 0 0 25px 0; overflow-x: auto; padding-bottom: 5px; }
+        .quick-links::-webkit-scrollbar { display: none; }
+        .quick-btn {
+            flex: 1; min-width: 100px; padding: 12px; background: var(--card-bg); color: var(--text-color);
+            border: 1px solid var(--border-color); border-radius: 12px;
+            font-size: 13px; font-weight: bold; cursor: pointer;
+            display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 5px;
+            position: relative; overflow: hidden; transition: transform 0.2s;
+        }
+        .quick-btn i { color: var(--main-accent); font-size: 18px; }
+        .quick-btn:active { transform: scale(0.98); }
+        /* Apply shine to all three quick buttons */
+        .quick-btn.btn-shine::after {
+            content: ''; position: absolute; top: 0; left: 150%; width: 100%; height: 100%;
+            background: linear-gradient(to left, transparent, rgba(255, 255, 255, 0.5), transparent);
+            transform: skewX(-20deg); filter: blur(8px); animation: shine 2.5s infinite linear;
+        }
+        @keyframes shine { 0% { left: 150%; } 100% { left: -150%; } }
+
+        /* --- SIDEBAR --- */
+        .sidebar { 
+            position: fixed; top: 0; left: -280px; width: 280px; height: 100vh; 
+            background-color: var(--secondary-bg); z-index: 6000; 
+            transition: left 0.3s ease; padding: 20px 0;
+            box-shadow: 5px 0 15px rgba(0,0,0,0.5); overflow-y: auto;
+        }
+        .sidebar-open { left: 0; }
+        .sidebar h2 { padding: 0 20px; color: var(--main-accent); margin-bottom: 20px; }
+        .menu-item {
+            display: flex; align-items: center; padding: 15px 20px; 
+            color: var(--text-color); text-decoration: none; 
+            border-bottom: 1px solid var(--border-color); font-size: 16px;
+        }
+        .menu-item i { width: 30px; color: var(--main-accent); font-size: 18px; }
+        .overlay-bg { background: rgba(0,0,0,0.7); position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 5999; display: none; }
+
+        /* --- CARDS --- */
+        .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+        .card { 
+            background: var(--card-bg); border-radius: 12px; overflow: hidden;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1); border: 1px solid var(--border-color);
+            position: relative; /* Needed for child shine effect */
+        }
+        .card img { width: 100%; height: 160px; object-fit: cover; background: var(--secondary-bg); }
+        .card-content { padding: 10px; text-align: center; }
+        .card h3 { font-size: 14px; margin: 5px 0; color: var(--text-color); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .card p { font-size: 15px; font-weight: bold; margin: 0 0 8px; color: var(--main-accent); }
+        .row { display: flex; gap: 5px; }
+        
+        .btn-action { flex: 1; padding: 8px 0; border-radius: 6px; font-size: 12px; font-weight: bold; border: none; cursor: pointer; }
+        .btn-view-dt { background: var(--card-bg); border: 1px solid var(--main-accent); color: var(--text-color); }
+        .btn-add { background: var(--main-accent); color: white; border: none; }
+
+        /* New Arrivals Shine Effect on Card */
+        .card.shine-new::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 50%;
+            height: 100%;
+            background: rgba(255, 255, 255, 0.1);
+            transform: skewX(-20deg);
+            animation: card-shine 3s infinite;
+        }
+        @keyframes card-shine {
+            0% { left: -100%; }
+            50% { left: 150%; }
+            100% { left: -100%; }
+        }
+
+
+        /* --- FLOATING FOOTER --- */
+        .footer {
+            position: fixed; bottom: 20px; left: 5%; width: 90%; height: 65px;
+            background: var(--glass-bg);
+            backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
+            border: 1px solid rgba(255,255,255,0.1); border-radius: 20px;
+            display: flex; justify-content: space-around; align-items: center;
+            z-index: 5000; box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+        }
+        .f-icon { display: flex; flex-direction: column; align-items: center; justify-content: center; color: var(--text-light); height: 100%; width: 25%; position: relative; font-size: 0; }
+        .f-icon i { font-size: 24px; transition: 0.3s; margin-bottom: 0; }
+        .f-icon.active i { color: var(--main-accent); transform: scale(1.1); }
+        .f-icon.active::after { content: ''; position: absolute; bottom: 10px; width: 5px; height: 5px; background: var(--main-accent); border-radius: 50%; }
+        #cart-count { position: absolute; top: 15px; right: 25%; background: red; color: white; border-radius: 50%; padding: 2px 5px; font-size: 10px; font-weight: bold; display: none; }
+
+        /* --- POPUPS & IMAGE SLIDER --- */
+        /* IMPORTANT: This is the parent container for animation */
+        .popup { 
+            position: fixed; top: 0; left: 0; width: 100%; height: 100vh; background: var(--bg-color); z-index: 2000; display: none; overflow-y: auto; padding-bottom: 100px;
+            transform: translateY(0);
+            transition: transform 0.3s ease-out, opacity 0.3s ease-out;
+        }
+        .popup.closing {
+            transform: translateY(100%);
+            opacity: 0;
+            display: block; 
+        }
+        
+        .popup-content { padding: 80px 20px 100px 20px; } 
+        
+        /* AI ANIMATION CLASS for DETAILS CONTENT */
+        /* Updated animation for Zoom-In effect */
+        .ai-anim-up {
+            animation: zoomInFade 0.4s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
+        }
+        @keyframes zoomInFade {
+            from { opacity: 0; transform: scale(0.95); }
+            to { opacity: 1; transform: scale(1); }
+        }
+
+        /* LIVE SELLING AI ANIMATION BADGE */
+        .live-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            background: rgba(255, 0, 0, 0.1);
+            color: #ff3b3b;
+            border: 1px solid #ff3b3b;
+            padding: 4px 10px;
+            border-radius: 50px;
+            font-size: 10px;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            box-shadow: 0 0 10px rgba(255, 0, 0, 0.4);
+            animation: live-pulse 2s infinite ease-in-out;
+            margin-left: auto;
+            margin-right: 0;
+        }
+
+        .live-dot {
+            width: 6px;
+            height: 6px;
+            background-color: #ff3b3b;
+            border-radius: 50%;
+            animation: blink-live 1s infinite;
+        }
+
+        @keyframes live-pulse {
+            0% { box-shadow: 0 0 5px rgba(255, 0, 0, 0.4); transform: scale(1); }
+            50% { box-shadow: 0 0 15px rgba(255, 0, 0, 0.6); transform: scale(1.05); }
+            100% { box-shadow: 0 0 5px rgba(255, 0, 0, 0.4); transform: scale(1); }
+        }
+
+        @keyframes blink-live {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.3; }
+        }
+
+        /* SCROLLABLE IMAGE CONTAINER FOR NEW ARRIVALS */
+        .popup-image-container {
+            display: flex;
+            overflow-x: auto;
+            gap: 10px;
+            scroll-snap-type: x mandatory;
+            padding-bottom: 10px;
+        }
+        .popup-image-container img {
+            width: 100%;
+            height: 400px;
+            object-fit: cover;
+            flex-shrink: 0;
+            scroll-snap-align: center;
+            border-radius: 10px;
+        }
+        .popup-image-container::-webkit-scrollbar { display: none; }
+
+        .close-btn { position: fixed; top: 15px; left: 15px; z-index: 2001; color: var(--text-color); background: rgba(0,0,0,0.5); border: 1px solid var(--text-color); border-radius: 50%; width: 40px; height: 40px; display: flex; align-items: center; justify-content: center; font-size: 18px; }
+
+        /* Input & Form */
+        .input-glow-fancy { width: 100%; padding: 12px 12px 12px 45px; margin-bottom: 15px; background: var(--card-bg); border: 1px solid var(--border-color); color: var(--text-color); border-radius: 8px; font-size: 16px; }
+        .input-glow-fancy:focus { border-color: var(--main-accent); }
+        .form-group { position: relative; }
+        .form-group i { position: absolute; left: 15px; top: 14px; color: var(--main-accent); }
+        .confirm-btn-3d { width: 100%; padding: 15px; background: var(--main-accent); color: white; border: none; border-radius: 10px; font-size: 16px; font-weight: bold; box-shadow: 0 5px 15px rgba(0,0,0,0.3); margin-top: 10px; cursor: pointer; }
+
+        /* Cart & Order Styling */
+        .cart-item { display: flex; align-items: center; justify-content: space-between; background: var(--card-bg); padding: 10px; border-radius: 10px; margin-bottom: 10px; border: 1px solid var(--border-color); }
+        .cart-item img { width: 60px; height: 60px; border-radius: 5px; margin-right: 10px; }
+        .cart-item div { flex: 1; }
+        .cart-item h4 { margin: 0 0 5px; font-size: 14px; color: var(--text-color); }
+        .cart-item p { margin: 0; color: var(--main-accent); font-weight: bold; }
+        .cart-remove-btn { background: transparent; color: red; border: none; font-size: 16px; cursor: pointer; }
+        .order-card { background: var(--card-bg); border: 1px solid var(--main-accent); border-radius: 10px; padding: 15px; margin-bottom: 15px; }
+        .order-header { display: flex; justify-content: space-between; margin-bottom: 10px; font-size: 12px; color: var(--text-light); }
+        .order-total { font-weight: bold; color: var(--main-accent); text-align: right; margin-top: 5px; }
+
+        /* Social Icons */
+        .s-btn { width: 40px; height: 40px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 18px; color: white; text-decoration: none; box-shadow: 0 0 5px rgba(0,0,0,0.5); }
+        .light-mode .s-btn { background-color: var(--main-accent) !important; color: white !important; border: 1px solid var(--main-accent); }
+        .s-btn.yt { background: #FF0000; } .s-btn.fb { background: #3b5998; } .s-btn.ig { background: #E1306C; } .s-btn.wa { background: #25D366; }
+
+        /* Loader */
+        #globalLoader { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: var(--bg-color); z-index: 8000; display: none; justify-content: center; align-items: center; opacity: 0.95; }
+        .loader-spinner { border: 4px solid var(--card-bg); border-top: 4px solid var(--main-accent); border-radius: 50%; width: 40px; height: 40px; animation: spin 0.8s linear infinite; }
+        @keyframes spin { 100% { transform: rotate(360deg); } }
+        .cart-fly-img { position: fixed; z-index: 9999; width: 50px; height: 50px; border-radius: 50%; pointer-events: none; transition: 0.8s; opacity: 0.8; }
+    </style>
+</head>
+<body>
+    
+    <div id="splashScreen">
+        <div class="splash-content">
+            <div class="splash-logo-text">RUHI TEXTILES</div>
+            <div class="splash-tagline">Quality and Trust</div>
+        </div>
+    </div>
+
+    <div id="globalLoader"><div class="loader-spinner"></div></div>
+    <div id="overlayBg" class="overlay-bg" onclick="closeMenu()"></div>
+    
+    <div id="sidebar" class="sidebar">
+        <div style="display:flex; justify-content:space-between; align-items:center; padding: 0 20px 20px 20px; border-bottom: 1px solid var(--border-color);">
+            <h2>Ruhi Textiles</h2>
+            <div class="icon" onclick="closeMenu()" style="color:var(--main-accent); margin:0;"><i class="fas fa-times"></i></div>
+        </div>
+
+        <a href="#" class="menu-item" onclick="showHome(); closeMenu()"><i class="fas fa-home"></i> Home</a>
+        <a href="#" class="menu-item" onclick="showNew(); closeMenu()"><i class="fas fa-fire-alt"></i> New Arrivals</a>
+        <a href="#" class="menu-item" onclick="showBest(); closeMenu()"><i class="fas fa-crown"></i> Best Selling</a>
+        <a href="#" class="menu-item" onclick="openProfile(); closeMenu()"><i class="fas fa-user-circle"></i> My Account</a>
+        <a href="#" class="menu-item" onclick="showContactMenu()"><i class="fas fa-phone-alt"></i> Contact Us</a>
+        <a href="#" class="menu-item" onclick="showAboutMenu()"><i class="fas fa-info-circle"></i> About Us</a>
+        <a href="#" class="menu-item" onclick="showPrivacyPolicyMenu()"><i class="fas fa-shield-alt"></i> Privacy Policy</a>
+    </div>
+
+    <div class="header">
+        <div class="icon" onclick="toggleMenu()"> 
+            <div class="hamburger"><span></span><span></span><span></span></div>
+        </div>
+        <div class="title" id="pageTitle">Ruhi Textiles</div>
+        <div class="icon" onclick="showSearch()" style="margin-left:auto;"><i class="fas fa-search"></i></div>
+    </div>
+    
+    <div class="marquee-bar" id="marqueeBar"><span class="marquee-text">✨ The Festive Collection is Live! Shop Now for Exclusive Designs | Ruhi Textiles - Quality and Trust</span></div>
+    
+    <div id="screen-search" class="app-screen">
+        <h3 class="section-title">Search</h3>
+        <input type="text" id="searchInput" class="input-glow-fancy" placeholder="Search products..." onkeyup="filterProducts()">
+        <div id="searchResultsArea" class="grid"></div>
+    </div>
+    
+    <div id="screen-home" class="app-screen">
+        <div class="banner"><img src="IMG_20251214_095131.png" id="bannerImg" onerror="this.src='https://via.placeholder.com/600x300/222/00d9ff?text=Ruhi+Collection'"></div>
+        
+        <div class="quick-links">
+            <button class="quick-btn btn-shine" onclick="showNew()">
+                <i class="fas fa-fire-alt"></i> New Arrivals
+            </button>
+            <button class="quick-btn btn-shine" onclick="showBest()">
+                <i class="fas fa-crown"></i> Best Selling
+            </button>
+            <button class="quick-btn btn-shine" onclick="showTrending()">
+                <i class="fas fa-star"></i> Trending
+            </button>
+        </div>
+
+        <h3 class="section-title">Ajrakh Collection</h3>
+        <div class="grid" id="ajrakh-container"></div>
+        <h3 class="section-title">Other Designs</h3>
+        <div class="grid" id="others-container"></div>
+    </div>
+
+    <div id="screen-new" class="app-screen">
+        <h3 class="section-title">
+            <span>🔥 New Arrivals</span>
+            <i class="fas fa-arrow-left" onclick="showHome()" style="font-size:20px; cursor:pointer;"></i>
+        </h3>
+        <div class="grid" id="new-container"></div>
+    </div>
+
+    <div id="screen-best" class="app-screen">
+        <h3 class="section-title">
+            <div style="display:flex; align-items:center;">
+                <span>👑 Best Selling</span>
+                <div class="live-badge" style="margin-left: 10px;"><div class="live-dot"></div> LIVE SELLING</div>
+            </div>
+            <i class="fas fa-arrow-left" onclick="showHome()" style="font-size:20px; cursor:pointer;"></i>
+        </h3>
+        <div class="grid" id="best-container"></div>
+    </div>
+
+    <div id="screen-orders" class="app-screen">
+        <h3 class="section-title">Order History</h3>
+        <div id="orders-list-container"></div>
+    </div>
+    
+    <div id="detailsPopup" class="popup">
+        <div class="close-btn" onclick="closePopup('detailsPopup')"><i class="fas fa-arrow-left"></i></div>
+        <div id="dtImgContainer" class="popup-image-container">
+            </div>
+        
+        <div class="popup-content" id="dtContent" style="padding-top: 10px;">
+            <h2 id="dtTitle" style="color:var(--text-color);">Title</h2>
+            <h2 id="dtPrice" style="color:var(--main-accent);">Price</h2>
+            <hr style="border-color:var(--border-color); opacity:0.3; margin:15px 0;">
+            <p id="dtDesc" style="color:var(--text-light); line-height:1.6; white-space: pre-wrap;">Details...</p>
+            <div style="display:flex; gap:10px; margin-top:20px;">
+                <button class="confirm-btn-3d" id="innerAddToCart" style="background:transparent; border:1px solid var(--main-accent); color:var(--text-color);" onclick="addToCartFromDetails()">Add to Cart</button>
+                <button class="confirm-btn-3d" id="innerBuy" onclick="buyNowFromDetails()">Buy Now</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="cartPopup" class="popup">
+        <div class="close-btn" onclick="closePopup('cartPopup')"><i class="fas fa-arrow-left"></i></div>
+        <div class="popup-content">
+            <h2 class="section-title">Shopping Cart</h2>
+            <div id="cart-items-container"></div>
+            <div style="background:var(--card-bg); padding:15px; border-radius:10px; margin-top:20px; display:flex; justify-content:space-between; font-weight:bold; color:var(--text-color); border:1px solid var(--border-color);">
+                <span>Total:</span><span id="cart-total-price" style="color:var(--main-accent);">₹0</span>
+            </div>
+            <button class="confirm-btn-3d" style="background:#25D366;" onclick="checkoutWhatsapp()"><i class="fab fa-whatsapp"></i> Checkout</button>
+            <button class="confirm-btn-3d" style="background:transparent; color:red; margin-top:5px; font-size:14px;" onclick="clearCartConfirm()">Empty Cart</button>
+        </div>
+    </div>
+
+    <div id="formPopup" class="popup">
+        <div class="close-btn" onclick="closePopup('formPopup')"><i class="fas fa-arrow-left"></i></div>
+        <div class="popup-content premium-form-container">
+            <h2 class="section-title">Delivery Details</h2>
+            <div style="background:rgba(0,217,255,0.1); padding:15px; border-radius:10px; margin-bottom:20px; border:1px solid var(--main-accent);">
+                <p style="color:var(--text-light); font-size:12px; margin:0;">ITEM:</p>
+                <h3 id="formProd" style="color:var(--text-color); margin:5px 0;">Product</h3>
+                <h3 id="formPrice" style="color:var(--main-accent); margin:0;">₹ Price</h3>
+            </div>
+            <div class="form-group"><i class="fas fa-user"></i><input type="text" id="cName" class="input-glow-fancy" placeholder="Full Name"></div>
+            <div class="form-group"><i class="fas fa-phone"></i><input type="tel" id="cPhone" class="input-glow-fancy" placeholder="WhatsApp Number"></div>
+            <div class="form-group"><i class="fas fa-home"></i><input type="text" id="cAddress" class="input-glow-fancy" placeholder="Full Address"></div>
+            <div class="form-group"><i class="fas fa-map-pin"></i><input type="number" id="cPin" class="input-glow-fancy" placeholder="Pincode"></div>
+            <button class="confirm-btn-3d" onclick="sendWhatsapp()">Confirm & Send</button>
+        </div>
+    </div>
+
+    <div id="loginPopup" class="popup">
+        <div class="close-btn" onclick="closePopup('loginPopup')"><i class="fas fa-arrow-left"></i></div>
+        <div class="popup-content">
+            <h2 class="section-title">Customer Login</h2>
+            <p style="color:var(--text-light); margin-bottom:20px;">Save details for faster checkout.</p>
+            <div class="form-group"><i class="fas fa-user"></i><input type="text" id="loginName" class="input-glow-fancy" placeholder="Full Name"></div>
+            <div class="form-group"><i class="fas fa-phone"></i><input type="tel" id="loginPhone" class="input-glow-fancy" placeholder="Mobile Number"></div>
+            <button class="confirm-btn-3d" onclick="saveLogin()">Save & Login</button>
+            <button class="confirm-btn-3d" style="background:transparent; border:1px solid var(--border-color); color:var(--text-color); margin-top:10px;" onclick="closePopup('loginPopup'); showHome();">Cancel</button>
+        </div>
+    </div>
+
+    <div id="profilePopup" class="popup">
+        <div class="popup-content">
+            <div style="text-align:center; margin-bottom:30px;">
+                <div style="width:80px; height:80px; background:var(--main-accent); border-radius:50%; margin:0 auto 10px; display:flex; align-items:center; justify-content:center; color:#fff; font-size:30px;"><i class="fas fa-user"></i></div>
+                <h2 id="profileName" style="color:var(--text-color); margin:0;">Guest User</h2>
+                <p id="profilePhone" style="color:var(--text-light); margin:5px 0 0 0; font-size:14px; display:none;">+91</p>
+                <button id="loginBtn" onclick="openLogin()" style="margin-top:10px; padding:8px 20px; background:var(--main-accent); border:none; color:white; border-radius:20px; cursor:pointer;">Login</button>
+            </div>
+            
+            <div style="background:var(--card-bg); border-radius:12px; overflow:hidden; border:1px solid var(--border-color);">
+                <a href="#" class="menu-item" onclick="toggleTheme()"><i class="fas fa-adjust" id="themeIcon"></i> <span id="themeText">Switch Theme</span></a>
+                <a href="#" class="menu-item" onclick="showOrders()"><i class="fas fa-history"></i> Order History</a>
+                <a href="#" class="menu-item" onclick="showPolicy()">
+                    <i class="fas fa-file-contract"></i> Company Policy
+                </a>
+                <a href="#" class="menu-item" onclick="showAbout()">
+                    <i class="fas fa-info-circle"></i> About Company
+                </a>
+                <a href="#" class="menu-item" onclick="showDevContact()">
+                    <i class="fas fa-code"></i> Developer Contact
+                </a>
+                <a href="#" id="logoutBtn" class="menu-item" style="color:red; display:none;" onclick="performLogout()"><i class="fas fa-sign-out-alt"></i> Logout</a>
+            </div>
+            
+            <div style="text-align:center; margin-top:30px;">
+                <p style="color:var(--text-light); font-size:12px; margin-bottom:15px;">CONNECT WITH US</p>
+                <div style="display:flex; justify-content:center; gap:15px;">
+                    <a href="#" onclick="openExternalLink('https://youtube.com/@ruhifashion?si=9m1HVntKDLXDZ-Ys')" class="s-btn yt"><i class="fab fa-youtube"></i></a>
+                    <a href="#" onclick="openExternalLink('https://facebook.com/VTMShopNo3005')" class="s-btn fb"><i class="fab fa-facebook-f"></i></a>
+                    <a href="#" onclick="openExternalLink('https://instagram.com/ruhifashion01')" class="s-btn ig"><i class="fab fa-instagram"></i></a>
+                    <a href="#" onclick="openExternalLink('https://chat.whatsapp.com/E3oi2om5iHy7UD9YkYh')" class="s-btn wa"><i class="fab fa-whatsapp"></i></a>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div id="privacyPopup" class="popup">
+        <div class="close-btn" onclick="closePopup('privacyPopup')"><i class="fas fa-arrow-left"></i></div>
+        <div class="popup-content"><h2 class="section-title">Privacy Policy</h2><p style="color:var(--text-color)">Data stored locally. We respect your privacy.</p></div>
+    </div>
+    
+    <div id="policyPopup" class="popup">
+        <div class="close-btn" onclick="closePopup('policyPopup')"><i class="fas fa-arrow-left"></i></div>
+        <div class="popup-content">
+            <h2 class="section-title">Company Policy</h2>
+            <p style="color:var(--text-color); margin-bottom: 15px; white-space: pre-wrap;">
+                Ruhi Textile is a Surat-based blouse manufacturing company committed to quality production, ethical practices, and customer satisfaction. All employees and management must follow these company policies strictly.
+            </p>
+            <p style="color:var(--text-color)">
+                *Return Policy:* Returns/Exchanges accepted within 7 days for defective items only. Shipping charges non-refundable. For more details, please contact us.
+            </p>
+        </div>
+    </div>
+    
+    <div id="contactPopup" class="popup">
+        <div class="close-btn" onclick="closePopup('contactPopup')"><i class="fas fa-arrow-left"></i></div>
+        <div class="popup-content"><h2 class="section-title">Contact</h2><button class="confirm-btn-3d" style="background:#25D366" onclick="openExternalLink('https://wa.me/919157207812')">Chat on WhatsApp</button></div>
+    </div>
+    
+    <div id="aboutPopup" class="popup">
+        <div class="close-btn" onclick="closePopup('aboutPopup')"><i class="fas fa-arrow-left"></i></div>
+        <div class="popup-content">
+            <h2 class="section-title">About Ruhi Textiles</h2>
+            <p style="color:var(--text-color); line-height:1.6; white-space: pre-wrap;">
+                Ruhi Textile is a Surat-based blouse manufacturing company known for quality craftsmanship, modern designs, and reliable production. Established with a vision to serve the Indian textile market, Ruhi Textile specializes in manufacturing stylish, comfortable, and premium-quality blouses that meet the changing fashion needs of customers.
+
+                Located in Surat, Gujarat, the textile hub of India, Ruhi Textile combines traditional tailoring skills with modern stitching techniques to deliver consistent and high-standard products. Our production process focuses on precision cutting, strong stitching, fine finishing, and strict quality control at every stage.
+
+                At Ruhi Textile, we believe in quality, trust, and long-term relationships. We work closely with wholesalers, retailers, and fashion businesses to ensure timely delivery and customer satisfaction. Ethical business practices, employee safety, and compliance with labor laws are core values of our company.
+
+                With a skilled workforce and a commitment to continuous improvement, Ruhi Textile aims to grow as a trusted name in blouse manufacturing while contributing positively to the textile industry.
+            </p>
+        </div>
+    </div>
+    
+    <div id="devContactPopup" class="popup">
+        <div class="close-btn" onclick="closePopup('devContactPopup')"><i class="fas fa-arrow-left"></i></div>
+        <div class="popup-content"><h2 class="section-title">Developer Contact</h2><p style="color:var(--text-light)">For app support or feedback, please contact the developer via WhatsApp on **9608720622**.</p><button class="confirm-btn-3d" style="background:#25D366" onclick="openExternalLink('https://wa.me/919608720622')"><i class="fab fa-whatsapp"></i> Chat with Developer</button></div>
+    </div>
+
+    <div class="footer">
+        <div class="f-icon active" id="footerHome" onclick="showHome()"><i class="fas fa-home"></i></div>
+        <div class="f-icon" id="footerSearch" onclick="showSearch()"><i class="fas fa-search"></i></div>
+        <div class="f-icon" id="footerCart" onclick="showCart()">
+            <i class="fas fa-shopping-cart"></i>
+            <span id="cart-count">0</span>
+        </div>
+        <div class="f-icon" onclick="openProfile()"><i class="fas fa-user"></i></div>
+    </div>
+
+    <script>
+        // --- BANNER IMAGES ---
+        let imgs = [
+            "IMG_20251214_095131.png",
+            "IMG_20251210_230152.png",
+            "IMG_20251209_002327.jpg",
+            "IMG_20251209_002416.jpg",
+            "1-E28093-253.jpg"
+        ];
+
+        const products = [
+            { id: 1, name: "Ajrakh Blue Cotton", price: 250, cat: "ajrakh", img: "IMG-20251207-WA0002.jpg" },
+            { id: 2, name: "Madder Red Cotton", price: 250, cat: "ajrakh", img: "IMG-20251207-WA0005.jpg" },
+            { id: 3, name: "Midnight Black", price: 250, cat: "ajrakh", img: "IMG-20251207-WA0013.jpg" },
+            { id: 4, name: "Rustic Maroon", price: 250, cat: "ajrakh", img: "IMG-20251207-WA0014.jpg" },
+            { id: 5, name: "Deep Green Ajrakh", price: 250, cat: "ajrakh", img: "IMG-20251207-WA0015.jpg" },
+            { id: 6, name: "Geometric Ajrakh", price: 250, cat: "ajrakh", img: "IMG-20251207-WA0016.jpg" },
+            { id: 7, name: "Classic Brown", price: 250, cat: "ajrakh", img: "IMG-20251208-WA0001.jpg" },
+            { id: 8, name: "Orange Dot", price: 250, cat: "ajrakh", img: "IMG-20251208-WA0002.jpg" },
+            { id: 101, name: "Star Pattern", price: 280, cat: "others", img: "IMG-20251208-WA0004.jpg" },
+            { id: 102, name: "Flower Print", price: 280, cat: "others", img: "IMG-20251208-WA0006.jpg" },
+            
+            /* --- BEST SELLING (OLD V-NECKS) --- */
+            { id: 201, name: "Black V-Neck", price: 350, cat: "best", img: "IMG-20251212-WA0010.jpg" },
+            { id: 202, name: "Red V-Neck", price: 320, cat: "best", img: "IMG-20251212-WA0013.jpg" },
+            { id: 203, name: "Navy Blue V-Neck", price: 300, cat: "best", img: "IMG-20251212-WA0017.jpg" },
+            { id: 204, name: "Emerald Green", price: 330, cat: "best", img: "IMG-20251212-WA0019.jpg" },
+            { id: 205, name: "Floral V-Neck", price: 350, cat: "best", img: "IMG-20251212-WA0020.jpg" },
+            { id: 206, name: "Rust Orange", price: 300, cat: "best", img: "IMG-20251212-WA0023.jpg" },
+            { id: 207, name: "Yellow Mustard", price: 320, cat: "best", img: "IMG-20251212-WA0024.jpg" },
+            { id: 208, name: "Golden Work", price: 350, cat: "best", img: "IMG-20251207-WA0022.jpg" },
+
+            /* --- NEW ARRIVALS (Vichitra Silk Star01) --- */
+            { id: 301, name: "Star01 - Red Silk Blouse", price: 300, cat: "new", img: "IMG-20251215-WA0000.jpg" },
+            { id: 302, name: "Star01 - Green Silk Blouse", price: 300, cat: "new", img: "IMG-20251215-WA0001.jpg" },
+            { id: 303, name: "Star01 - Navy Silk Blouse", price: 300, cat: "new", img: "IMG-20251215-WA0002.jpg" },
+            { id: 304, name: "Star01 - Pink Silk Blouse", price: 300, cat: "new", img: "IMG-20251215-WA0003.jpg" },
+            { id: 305, name: "Star01 - Black Silk Blouse", price: 300, cat: "new", img: "IMG-20251215-WA0004.jpg" },
+            { id: 306, name: "Star01 - Yellow Silk Blouse", price: 300, cat: "new", img: "IMG-20251215-WA0006.jpg" },
+            { id: 307, name: "Star01 - Maroon Silk Blouse", price: 300, cat: "new", img: "IMG-20251215-WA0007.jpg" },
+            { id: 308, name: "Star01 - Purple Silk Blouse", price: 300, cat: "new", img: "IMG-20251215-WA0008.jpg" },
+            { id: 309, name: "Star01 - Grey Silk Blouse", price: 300, cat: "new", img: "IMG-20251215-WA0009.jpg" },
+            { id: 310, name: "Star01 - Orange Silk Blouse", price: 300, cat: "new", img: "IMG-20251215-WA0010.jpg" },
+            { id: 311, name: "Star01 - Golden Silk Blouse", price: 300, cat: "new", img: "IMG-20251215-WA0011.jpg" },
+            { id: 312, name: "Star01 - Turquoise Silk Blouse", price: 300, cat: "new", img: "IMG-20251215-WA0012.jpg" }
+        ];
+
+        let cart = JSON.parse(localStorage.getItem('ruhiCart')) || [];
+        let orders = JSON.parse(localStorage.getItem('ruhiOrders')) || [];
+
+        function initApp() {
+            // Start the splash screen animation
+            setTimeout(hideSplashAndShowHome, 2500); 
+            setInitialTheme();
+            checkLogin();
+            renderProducts();
+            updateCartCount();
+        }
+
+        function hideSplashAndShowHome() {
+            const splash = document.getElementById('splashScreen');
+            splash.style.opacity = '0';
+            setTimeout(() => {
+                splash.style.display = 'none';
+                // Only show Home Screen after splash is fully hidden
+                // Initial showHome() call no longer needs a loader timeout because splash handles initial delay
+                showHome(false); 
+            }, 500); 
+        }
+
+
+        function checkLogin() {
+            const userName = localStorage.getItem('ruhi_user_name');
+            const userPhone = localStorage.getItem('ruhi_user_phone');
+            if (userName && userPhone) {
+                document.getElementById('profileName').innerText = userName;
+                document.getElementById('profilePhone').innerText = userPhone;
+                document.getElementById('profilePhone').style.display = 'block';
+                document.getElementById('loginBtn').style.display = 'none';
+                document.getElementById('logoutBtn').style.display = 'flex';
+                document.getElementById('cName').value = userName;
+                document.getElementById('cPhone').value = userPhone;
+            } else {
+                document.getElementById('profileName').innerText = 'Guest User';
+                document.getElementById('profilePhone').style.display = 'none';
+                document.getElementById('loginBtn').style.display = 'inline-block';
+                document.getElementById('logoutBtn').style.display = 'none';
+            }
+        }
+
+        function openLogin() { closeAll(); document.getElementById('loginPopup').style.display = 'block'; }
+        function saveLogin() {
+            const name = document.getElementById('loginName').value;
+            const phone = document.getElementById('loginPhone').value;
+            if (!name || !phone) { alert("Please enter Name and Phone."); return; }
+            showLoader();
+            setTimeout(() => {
+                localStorage.setItem('ruhi_user_name', name);
+                localStorage.setItem('ruhi_user_phone', phone);
+                checkLogin(); closeAll(); showHome(); hideLoader();
+            }, 800);
+        }
+        function performLogout() { if(confirm("Logout?")) { localStorage.removeItem('ruhi_user_name'); localStorage.removeItem('ruhi_user_phone'); checkLogin(); closeAll(); showHome(); } }
+
+        function hideAllScreens() { 
+            // Hide all screens
+            document.querySelectorAll('.app-screen').forEach(el => {
+                el.style.display = 'none';
+                el.classList.add('no-marquee-screen'); // Default to full height
+            }); 
+            // Hide marquee by default for non-home screens
+            document.getElementById('marqueeBar').style.display = 'none';
+        }
+        
+        // --- NEW closePopup function with animation ---
+        function closePopup(popupId) {
+            const popup = document.getElementById(popupId);
+            if (!popup) return;
+            
+            // 1. Add closing class to trigger CSS animation
+            popup.classList.add('closing');
+
+            // 2. Wait for the animation to finish (0.3s)
+            setTimeout(() => {
+                // 3. Hide the popup and remove the closing class
+                popup.style.display = 'none';
+                popup.classList.remove('closing');
+            }, 300); 
+        }
+        
+        function closeAll() { 
+            document.querySelectorAll('.popup').forEach(p => {
+                 p.classList.remove('closing'); // Ensure it's not mid-closing
+                 p.style.display = 'none';
+            });
+        }
+
+        function updateFooter(idx) { document.querySelectorAll('.f-icon').forEach((el, i) => el.classList.toggle('active', i === idx)); }
+
+        function showHome(useLoader = true) { 
+            if (useLoader) showLoader(500);
+            setTimeout(() => {
+                hideAllScreens(); 
+                closeAll(); 
+                const homeScreen = document.getElementById('screen-home');
+                homeScreen.style.display = 'block';
+                homeScreen.classList.remove('no-marquee-screen'); // Reset spacing for home
+                document.getElementById('marqueeBar').style.display = 'flex'; // Show marquee
+                
+                updateFooter(0); 
+                document.getElementById('pageTitle').innerText = 'Ruhi Textiles'; 
+                renderProducts(); 
+                if (useLoader) hideLoader();
+            }, useLoader ? 500 : 0);
+        }
+
+        function showSearch() { 
+            showLoader(500); 
+            setTimeout(() => {
+                hideAllScreens(); 
+                closeAll(); 
+                document.getElementById('screen-search').style.display = 'block'; 
+                updateFooter(1); 
+                document.getElementById('searchInput').focus();
+                hideLoader();
+            }, 500);
+        }
+
+        function showNew() { 
+            showLoader(500); 
+            setTimeout(() => { 
+                hideAllScreens(); 
+                closeAll(); 
+                document.getElementById('screen-new').style.display = 'block'; 
+                renderProducts(); // Re-render to apply shine class
+                hideLoader(); 
+            }, 500); 
+        }
+        
+        function showBest() { 
+            showLoader(500); 
+            setTimeout(() => { 
+                hideAllScreens(); 
+                closeAll(); 
+                document.getElementById('screen-best').style.display = 'block'; 
+                hideLoader(); 
+            }, 500); 
+        }
+
+        function showTrending() { 
+            showLoader(500); 
+            setTimeout(() => { 
+                showHome(); 
+                document.getElementById('others-container').scrollIntoView({behavior: "smooth"}); 
+                hideLoader(); 
+            }, 500); 
+        }
+
+        function showCart() { 
+            closeAll(); 
+            hideAllScreens(); 
+            updateFooter(2); 
+            renderCartItems(); 
+            document.getElementById('cartPopup').style.display = 'block'; 
+        }
+        
+        function showOrders() {
+            showLoader(500);
+            setTimeout(() => {
+                closeAll(); hideAllScreens();
+                const container = document.getElementById('orders-list-container');
+                let html = '';
+                if(orders.length === 0) html = '<p style="text-align:center; padding:20px; color:var(--text-light);">No previous orders.</p>';
+                else { orders.forEach(o => { html += `<div class="order-card"><div class="order-header"><span>${o.date}</span><span style="color:#25D366;">Sent</span></div><div style="font-size:13px; margin-bottom:5px; color:var(--text-color);">${o.items.join(', ')}</div><div class="order-total">Total: ₹${o.total}</div></div>`; }); }
+                container.innerHTML = html; document.getElementById('screen-orders').style.display = 'block';
+                hideLoader();
+            }, 500);
+        }
+
+        /* --- LOADER MANAGEMENT --- */
+        let loadingTimeout;
+        function showLoader(duration = 0) {
+            clearTimeout(loadingTimeout);
+            document.getElementById('globalLoader').style.display = 'flex';
+            if (duration > 0) {
+                loadingTimeout = setTimeout(hideLoader, duration);
+            }
+        }
+        function hideLoader() {
+            clearTimeout(loadingTimeout);
+            document.getElementById('globalLoader').style.display = 'none';
+        }
+
+        /* --- MENU BUTTON HANDLERS --- */
+        function showPolicy() { closeAll(); document.getElementById('policyPopup').style.display = 'block'; }
+        function showDevContact() { closeAll(); document.getElementById('devContactPopup').style.display = 'block'; }
+        function showAbout() { closeAll(); document.getElementById('aboutPopup').style.display = 'block'; }
+        
+        // Sidebar functions that close menu and then open popup
+        function showContactMenu() { closeMenu(); closeAll(); document.getElementById('contactPopup').style.display = 'block'; }
+        function showPrivacyPolicyMenu() { closeMenu(); closeAll(); document.getElementById('privacyPopup').style.display = 'block'; }
+        function showAboutMenu() { closeMenu(); closeAll(); document.getElementById('aboutPopup').style.display = 'block'; }
+        
+        function renderCartItems() {
+            const container = document.getElementById('cart-items-container');
+            let total = 0; let html = '';
+            if(cart.length === 0) html = '<div style="text-align:center; padding:40px; color:var(--text-light);"><i class="fas fa-shopping-basket" style="font-size:40px; margin-bottom:10px;"></i><p>Empty Cart</p></div>';
+            else { cart.forEach(item => { total += item.price; html += `<div class="cart-item"><div style="display:flex; align-items:center;"><img src="${item.img}"><div><h4>${item.name}</h4><p>₹${item.price}</p></div></div><button class="cart-remove-btn" onclick="removeFromCart(${item.id})"><i class="fas fa-trash"></i></button></div>`; }); }
+            container.innerHTML = html; document.getElementById('cart-total-price').innerText = '₹' + total;
+        }
+        function updateCartCount() { const count = cart.length; const badge = document.getElementById('cart-count'); badge.innerText = count; badge.style.display = count > 0 ? 'block' : 'none'; }
+        function getCartStatus(pid) { return cart.some(item => item.id === pid); }
+        function addToCart(pid, event) {
+            const product = products.find(p => p.id === pid);
+            if (!product) return;
+            cart.push(product); localStorage.setItem('ruhiCart', JSON.stringify(cart));
+            updateCartCount(); renderProducts();
+            if (event) animateToCart(event.target.closest('.card') || event.target);
+        }
+        function removeFromCart(pid) {
+            const idx = cart.findIndex(item => item.id === pid);
+            if (idx > -1) cart.splice(idx, 1);
+            localStorage.setItem('ruhiCart', JSON.stringify(cart));
+            updateCartCount(); renderCartItems();
+        }
+        function clearCartConfirm() { if(confirm("Empty Cart?")) { cart = []; localStorage.setItem('ruhiCart', JSON.stringify(cart)); updateCartCount(); renderCartItems(); } }
+
+        function renderProducts() {
+            const containers = { 
+                'ajrakh': document.getElementById('ajrakh-container'), 
+                'others': document.getElementById('others-container'), 
+                'new': document.getElementById('new-container'),
+                'best': document.getElementById('best-container'),
+                'search': document.getElementById('searchResultsArea') 
+            };
+            Object.values(containers).forEach(c => { if(c) c.innerHTML = ''; });
+            const createCard = (p) => {
+                const isInCart = getCartStatus(p.id);
+                const addCartAction = `event.stopPropagation(); addToCart(${p.id}, event)`;
+                const buyAction = `event.stopPropagation(); openForm(${p.id})`;
+                
+                // Add shine class only to New Arrivals cards
+                const shineClass = (p.cat === 'new') ? 'shine-new' : '';
+
+                return `
+                    <div class="card ${shineClass}" onclick="openDetails(${p.id})">
+                        <img src="${p.img}" loading="lazy" onerror="this.src='https://via.placeholder.com/300/222/00d9ff?text=Ruhi'"><div class="card-content"><h3>${p.name}</h3><p>₹${p.price}</p>
+                        <div class="row">
+                            <button class="btn-action btn-view-dt" onclick="${addCartAction}">Add to Cart</button>
+                            <button class="btn-action btn-add" onclick="${buyAction}">Buy Now</button>
+                        </div></div></div>`;
+            };
+            products.forEach(p => { if(containers[p.cat]) containers[p.cat].innerHTML += createCard(p); });
+        }
+        function filterProducts() {
+            const val = document.getElementById('searchInput').value.toLowerCase();
+            const grid = document.getElementById('searchResultsArea'); grid.innerHTML = '';
+            if(val.length < 2) return;
+            const found = products.filter(p => p.name.toLowerCase().includes(val) || p.cat.includes(val));
+            if(found.length === 0) grid.innerHTML = '<p style="color:var(--text-light); text-align:center;">No matches.</p>';
+            found.forEach(p => { grid.innerHTML += `<div class="card" onclick="openDetails(${p.id})"><img src="${p.img}" onerror="this.src='https://via.placeholder.com/300'"><div class="card-content"><h3>${p.name}</h3><p>₹${p.price}</p><div class="row"><button class="btn-action btn-view-dt" onclick="event.stopPropagation(); addToCart(${p.id}, event)">Add to Cart</button><button class="btn-action btn-add" onclick="event.stopPropagation(); openForm(${p.id})">Buy Now</button></div></div></div>`; });
+        }
+
+        let selProd = null;
+        function openDetails(pid) {
+            selProd = products.find(x => x.id === pid);
+            if(!selProd) return;
+            document.getElementById('dtTitle').innerText = selProd.name;
+            document.getElementById('dtPrice').innerText = '₹' + selProd.price;
+            
+            // CLEAN CONTAINER
+            const imgContainer = document.getElementById('dtImgContainer');
+            imgContainer.innerHTML = ''; 
+
+            // ADD FRONT IMAGE
+            const img1 = document.createElement('img');
+            img1.src = selProd.img;
+            imgContainer.appendChild(img1);
+
+            // DESCRIPTION LOGIC
+            if (selProd.cat === 'new') {
+                // NEW ARRIVALS: SPECIFIC TEXT STAR01
+                const newDesc = `RUHI FASHION -*STAR01❣️*\n\nFabric :- *Vichitra Silk*\nWork :- *Embroidery zari n Sequence*\nLining :- *Cotton*\nPattern :- *V Neck*\nOpen :- *Front With Hook n Back Heavy Latkan*\nColor :- *10*\nSleeve :- *3/4*\nPad :- *Yes*\nSize :- *38 upto 42 Chest*\n\nAffordable Price *300/- + Ship*`;
+                document.getElementById('dtDesc').innerText = newDesc;
+            } else if (selProd.cat === 'best') {
+                 // BEST SELLING (OLD V-NECKS): Generic Text + Single Image
+                document.getElementById('dtDesc').innerText = "• Premium Fabric\n• High Quality Stitching\n• Available in sizes 38-42"; 
+            } else {
+                // MAIN SCREEN (Ajrakh/Others): SPECIAL MUMTAZ09 TEXT
+                const specialDesc = `RUHI FASHION _ MUMTAZ09\n*ORIGINAL AJRAKH COTTON HALTER NECK BLOUSE*\n\n*FABRIC*:-- PURE AJRAKH PRINT COTTON.\n*INNER LININGS:-* Pure Pali Cotton Dubble Astar\n*SIZE*:-*38” Ready alter upto 42 Inch.*\n*SLEEVES*:- *12 Inch Sleeve*\n*DESGINE*:- Beautiful cotton Print Partywear Blouse Heavy Stitching Heavy Padded Back open Style\n*COLOUR*:-- *6* colours 2 Different Designs\n*RATE*:-- *Only ${selProd.price}/-*\n*Quality No~1*\n*NOTE*:-- All Colour available, Ready to wear & Ship`;
+                document.getElementById('dtDesc').innerText = specialDesc;
+            }
+
+            // TRIGGER AI ANIMATION (Updated to use 'zoomInFade')
+            const contentDiv = document.getElementById('dtContent');
+            const popup = document.getElementById('detailsPopup');
+            popup.style.display = 'block'; // Show popup first
+            
+            // Reset and trigger zoom animation
+            contentDiv.style.opacity = '0';
+            contentDiv.classList.remove('ai-anim-up'); 
+            void contentDiv.offsetWidth; // Force Reflow
+            contentDiv.classList.add('ai-anim-up'); 
+
+            const isInCart = getCartStatus(pid);
+            const btn = document.getElementById('innerAddToCart');
+            if(isInCart) { btn.innerText = "Go to Cart"; btn.setAttribute('onclick', 'showCart()'); } 
+            else { btn.innerText = "Add to Cart"; btn.setAttribute('onclick', 'addToCartFromDetails()'); }
+        }
+        function addToCartFromDetails() { if(selProd) { closePopup('detailsPopup'); cart.push(selProd); localStorage.setItem('ruhiCart', JSON.stringify(cart)); updateCartCount(); renderProducts(); } }
+        function buyNowFromDetails() { if(selProd) openForm(selProd.id); }
+        function openForm(pid) {
+            selProd = products.find(x => x.id === pid);
+            if(!selProd) return;
+            document.getElementById('formProd').innerText = selProd.name;
+            document.getElementById('formPrice').innerText = '₹' + selProd.price;
+            
+            // Pre-fill fields if user is logged in
+            const userName = localStorage.getItem('ruhi_user_name');
+            const userPhone = localStorage.getItem('ruhi_user_phone');
+            if (userName) document.getElementById('cName').value = userName;
+            if (userPhone) document.getElementById('cPhone').value = userPhone;
+            
+            document.getElementById('formPopup').style.display = 'block';
+        }
+        function checkoutWhatsapp() {
+            if(cart.length === 0) return;
+            let msg = "*NEW ORDER (CART CHECKOUT)* %0A"; 
+            let total = 0; 
+            let itemNames = [];
+            cart.forEach(i => { 
+                msg += `- ${i.name} (₹${i.price})%0A`; 
+                total += i.price; 
+                itemNames.push(i.name); 
+            });
+            msg += `%0A*Total:* ₹${total}`;
+            
+            const uName = localStorage.getItem('ruhi_user_name') || "";
+            if(uName) msg += `%0A%0A*Customer:* ${uName}`;
+            
+            orders.unshift({ date: new Date().toLocaleDateString(), items: itemNames, total: total });
+            localStorage.setItem('ruhiOrders', JSON.stringify(orders));
+            window.open(`https://wa.me/919157207812?text=${msg}`, '_blank');
+            cart = []; localStorage.setItem('ruhiCart', JSON.stringify(cart)); updateCartCount(); showHome();
+        }
+        
+        function sendWhatsapp() {
+            let name = document.getElementById('cName').value;
+            let phone = document.getElementById('cPhone').value;
+            let address = document.getElementById('cAddress').value;
+            let pin = document.getElementById('cPin').value;
+            
+            if (!name || !phone || !address || !pin) { 
+                alert("Please fill in all delivery details (Name, Phone, Address, Pincode)."); 
+                return; 
+            }
+
+            let msg = `*NEW ORDER (BUY NOW)*%0A`;
+            msg += `------------------------------%0A`;
+            msg += `*PRODUCT:* ${selProd.name}%0A`;
+            msg += `*PRICE:* ₹${selProd.price}%0A`;
+            msg += `------------------------------%0A`;
+            msg += `*DELIVERY DETAILS:*%0A`;
+            msg += `*Name:* ${name}%0A`;
+            msg += `*Phone/WhatsApp:* ${phone}%0A`;
+            msg += `*Address:* ${address}%0A`;
+            msg += `*Pincode:* ${pin}%0A`;
+
+            // Record order history
+            orders.unshift({ date: new Date().toLocaleDateString(), items: [selProd.name], total: selProd.price });
+            localStorage.setItem('ruhiOrders', JSON.stringify(orders));
+
+            window.open(`https://wa.me/919157207812?text=${msg}`, '_blank'); 
+            closeAll();
+        }
+
+        function animateToCart(el) {
+            const cartIcon = document.getElementById('footerCart');
+            const rect = el.getBoundingClientRect(); const dest = cartIcon.getBoundingClientRect();
+            const img = document.createElement('img');
+            img.src = el.querySelector('img').src; img.className = 'cart-fly-img';
+            img.style.top = rect.top + 'px'; img.style.left = rect.left + 'px';
+            document.body.appendChild(img);
+            setTimeout(() => { img.style.top = dest.top + 'px'; img.style.left = dest.left + 'px'; img.style.width = '20px'; img.style.height = '20px'; img.style.opacity = 0; }, 50);
+            setTimeout(() => img.remove(), 800);
+        }
+        function toggleMenu() { document.getElementById('sidebar').classList.toggle('sidebar-open'); document.getElementById('overlayBg').style.display = document.getElementById('sidebar').classList.contains('sidebar-open') ? 'block' : 'none'; }
+        function closeMenu() { 
+            document.getElementById('sidebar').classList.remove('sidebar-open'); 
+            document.getElementById('overlayBg').style.display = 'none'; 
+        }
+        
+        function showPrivacyPolicy() { closeAll(); document.getElementById('privacyPopup').style.display = 'block'; }
+        
+        function setInitialTheme() {
+            const savedTheme = localStorage.getItem('theme') || 'dark';
+            if (savedTheme === 'light') { document.body.classList.add('light-mode'); updateThemeUI(true); } else { updateThemeUI(false); }
+        }
+        function toggleTheme() {
+            document.body.classList.toggle('light-mode');
+            const isLight = document.body.classList.contains('light-mode');
+            localStorage.setItem('theme', isLight ? 'light' : 'dark');
+            updateThemeUI(isLight);
+        }
+        function updateThemeUI(isLight) {
+            const btn = document.getElementById('themeText');
+            if(btn) btn.innerText = isLight ? "Switch to Dark Mode" : "Switch to Light Mode";
+        }
+        function openExternalLink(url) { window.open(url, '_blank'); }
+        function openProfile() { closeMenu(); closeAll(); hideAllScreens(); document.getElementById('profilePopup').style.display = 'block'; updateFooter(3); }
+
+        let i = 0; setInterval(() => { i = (i + 1) % imgs.length; let b = document.getElementById('bannerImg'); if(b) b.src = imgs[i]; }, 3000);
+        initApp();
+    </script>
+</body>
+</html>
