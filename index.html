@@ -17,6 +17,8 @@
             --border-color: #333;
             --text-light: #aaa;
             --glass-bg: rgba(20, 20, 20, 0.9);
+            --blue-glow: #00d9ff;
+            --gold-glow: #ffc400;
         }
 
         .light-mode {
@@ -42,14 +44,14 @@
             transition: background-color 0.3s;
         }
         
-        /* --- SPLASH SCREEN STYLES (Based on your image look) --- */
+        /* --- SPLASH SCREEN STYLES (UNIQUE NEON PARTICLE EFFECT) --- */
         #splashScreen {
             position: fixed;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            background: linear-gradient(145deg, #020015 0%, #000000 70%); /* Dark gradient background */
+            background: #000000;
             z-index: 9999;
             display: flex;
             justify-content: center;
@@ -57,59 +59,68 @@
             flex-direction: column;
             transition: opacity 0.5s;
             overflow: hidden;
-            
-            /* Background particle/wave effect imitation */
-            box-shadow: inset 0 0 100px rgba(0, 200, 255, 0.2), inset 0 0 50px rgba(255, 200, 0, 0.2);
+            background: radial-gradient(ellipse at bottom, #1B2735 0%, #090A0F 100%);
         }
         
-        /* Dynamic Wave/Particle Container */
-        #splashScreen::before, #splashScreen::after {
+        /* Galaxy/Particle Background (More dynamic) */
+        #splashScreen::before {
             content: '';
             position: absolute;
-            top: 0;
-            left: 0;
-            width: 200%;
-            height: 200%;
-            background: radial-gradient(circle, rgba(0, 200, 255, 0.3) 0%, transparent 20%),
-                        radial-gradient(circle, rgba(255, 200, 0, 0.3) 0%, transparent 20%);
-            background-size: 20px 20px;
-            animation: wave-motion 15s linear infinite;
-            z-index: -1;
-            opacity: 0.5;
-        }
-        #splashScreen::after {
-            background-size: 30px 30px;
-            animation: wave-motion-reverse 20s linear infinite;
-        }
-
-        @keyframes wave-motion {
-            0% { transform: translate(0, 0); }
-            100% { transform: translate(-50%, -50%); }
-        }
-        @keyframes wave-motion-reverse {
-            0% { transform: translate(-50%, -50%); }
-            100% { transform: translate(0, 0); }
+            width: 150%;
+            height: 150%;
+            background: 
+                radial-gradient(circle at 70% 30%, rgba(255, 255, 255, 0.15) 0%, transparent 8%), /* Moon/Light Source */
+                radial-gradient(circle, rgba(0, 200, 255, 0.4) 0%, transparent 15%),
+                radial-gradient(circle, rgba(255, 200, 0, 0.4) 0%, transparent 15%);
+            background-size: 500px 500px;
+            animation: galaxy-rotate 60s linear infinite;
+            filter: blur(5px);
+            opacity: 0.8;
         }
         
+        @keyframes galaxy-rotate {
+            0% { transform: rotate(0deg) scale(1); }
+            100% { transform: rotate(360deg) scale(1.5); }
+        }
+
         .splash-content {
             text-align: center;
             opacity: 0;
-            transform: scale(0.9);
+            transform: scale(0.8);
             animation: logo-reveal 1.5s cubic-bezier(0.2, 0.8, 0.2, 1) 0.5s forwards;
             z-index: 10;
         }
         
         .splash-logo-text {
+            position: relative;
             font-size: 48px;
             font-weight: 900;
-            color: #fff; /* White for premium look */
+            color: #FFFFFF;
             letter-spacing: 5px;
             margin-bottom: 5px;
-            /* Text shadow mimicking glow */
-            text-shadow: 0 0 5px var(--main-accent), 0 0 10px rgba(0, 200, 255, 0.5);
-            font-family: serif; /* For elegant look */
+            font-family: 'Times New Roman', serif;
+            text-shadow: 0 0 5px #000;
+            overflow: hidden; 
         }
         
+        /* Text Shine Effect (Applied to RUHI TEXTILES) */
+        .splash-logo-text::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 150%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(to left, transparent, rgba(255, 255, 255, 0.8), transparent);
+            transform: skewX(-20deg);
+            filter: blur(2px);
+            animation: text-shine 3s infinite linear;
+        }
+        @keyframes text-shine { 
+            0% { left: 150%; } 
+            100% { left: -150%; } 
+        }
+
         .splash-tagline {
             font-size: 18px;
             color: var(--main-accent);
@@ -118,14 +129,34 @@
         }
         
         @keyframes logo-reveal {
-            0% { opacity: 0; transform: scale(0.9); }
+            0% { opacity: 0; transform: scale(0.8); }
             100% { opacity: 1; transform: scale(1); }
         }
+
+        /* DYNAMIC LOADING SPINNER */
+        .dynamic-loader {
+            border: 4px solid rgba(255, 255, 255, 0.2);
+            border-top: 4px solid var(--blue-glow);
+            border-right: 4px solid var(--gold-glow);
+            border-radius: 50%;
+            width: 30px;
+            height: 30px;
+            animation: spin 0.8s linear infinite, glow-spin 1.5s infinite alternate;
+            margin-top: 20px;
+        }
+        @keyframes glow-spin {
+            0% { box-shadow: 0 0 5px var(--blue-glow); }
+            100% { box-shadow: 0 0 15px var(--gold-glow); }
+        }
         
-        /* --- HEADER --- */
+        /* --- HEADER (BLUR EFFECT) --- */
         .header {
             position: fixed; top: 0; left: 0; width: 100%; height: 60px;
-            background: var(--secondary-bg); 
+            /* iPhone Blur Effect (Glassmorphism) */
+            background: rgba(18, 18, 18, 0.85); 
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            /* --- */
             display: flex; align-items: center; padding: 0 15px; z-index: 1000;
             border-bottom: 1px solid var(--border-color);
         }
@@ -208,7 +239,6 @@
             flex: 1; min-width: 100px; padding: 12px; background: var(--card-bg); color: var(--text-color);
             border: 1px solid var(--border-color); border-radius: 12px;
             font-size: 13px; font-weight: bold; cursor: pointer;
-            display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 5px;
             position: relative; overflow: hidden; transition: transform 0.2s;
         }
         .quick-btn i { color: var(--main-accent); font-size: 18px; }
@@ -274,12 +304,15 @@
         }
 
 
-        /* --- FLOATING FOOTER --- */
+        /* --- FLOATING FOOTER (BLUR EFFECT) --- */
         .footer {
             position: fixed; bottom: 20px; left: 5%; width: 90%; height: 65px;
-            background: var(--glass-bg);
-            backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
+            /* iPhone Blur Effect (Glassmorphism) */
+            background: rgba(18, 18, 18, 0.85);
+            backdrop-filter: blur(10px); 
+            -webkit-backdrop-filter: blur(10px);
             border: 1px solid rgba(255,255,255,0.1); border-radius: 20px;
+            /* --- */
             display: flex; justify-content: space-around; align-items: center;
             z-index: 5000; box-shadow: 0 10px 30px rgba(0,0,0,0.3);
         }
@@ -374,11 +407,123 @@
         .close-btn { position: fixed; top: 15px; left: 15px; z-index: 2001; color: var(--text-color); background: rgba(0,0,0,0.5); border: 1px solid var(--text-color); border-radius: 50%; width: 40px; height: 40px; display: flex; align-items: center; justify-content: center; font-size: 18px; }
 
         /* Input & Form */
-        .input-glow-fancy { width: 100%; padding: 12px 12px 12px 45px; margin-bottom: 15px; background: var(--card-bg); border: 1px solid var(--border-color); color: var(--text-color); border-radius: 8px; font-size: 16px; }
-        .input-glow-fancy:focus { border-color: var(--main-accent); }
+        /* Search Bar Border Animation Container */
+        .search-container-glow {
+            position: relative;
+            padding: 2px;
+            border-radius: 10px;
+            overflow: hidden;
+            background: var(--card-bg);
+            margin-bottom: 15px;
+        }
+
+        /* The actual glowing border (pseudo element) */
+        .search-container-glow::before {
+            content: '';
+            position: absolute;
+            top: -100%;
+            left: -100%;
+            width: 300%;
+            height: 300%;
+            background: conic-gradient(
+                transparent 0deg,
+                transparent 90deg,
+                var(--blue-glow) 100deg,
+                var(--gold-glow) 170deg,
+                transparent 180deg,
+                transparent 270deg,
+                var(--blue-glow) 280deg,
+                var(--gold-glow) 350deg,
+                transparent 360deg
+            );
+            animation: rotate-glow 5s linear infinite;
+            z-index: -1;
+            filter: blur(10px);
+        }
+
+        /* Animation for the rotating glow */
+        @keyframes rotate-glow {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* The inner container to hold the input and manage border */
+        .search-inner-wrap {
+            background: var(--card-bg);
+            border-radius: 8px;
+            overflow: hidden;
+            border: 1px solid var(--border-color);
+        }
+
+        /* Input field styling */
+        #searchInput {
+            width: 100%;
+            padding: 12px 12px 12px 45px;
+            background: transparent; /* Must be transparent to show glow/background */
+            border: none;
+            color: var(--text-color);
+            font-size: 16px;
+        }
+
+        /* Clean Input Field */
+        .input-glow-fancy { 
+            width: 100%; 
+            padding: 12px 12px 12px 45px; 
+            margin-bottom: 15px; 
+            background: var(--secondary-bg); /* Dark Solid BG */
+            border: 1px solid var(--border-color); 
+            color: var(--text-color); 
+            border-radius: 8px; 
+            font-size: 16px; 
+        }
+        .input-glow-fancy:focus {
+            border-color: var(--main-accent) !important;
+        }
+        
         .form-group { position: relative; }
         .form-group i { position: absolute; left: 15px; top: 14px; color: var(--main-accent); }
-        .confirm-btn-3d { width: 100%; padding: 15px; background: var(--main-accent); color: white; border: none; border-radius: 10px; font-size: 16px; font-weight: bold; box-shadow: 0 5px 15px rgba(0,0,0,0.3); margin-top: 10px; cursor: pointer; }
+        
+        /* New Premium Box for Item Details in Form */
+        #formPopup .item-details-box {
+            background: rgba(0, 0, 0, 0.5); /* Darker transparent base */
+            backdrop-filter: blur(5px);
+            -webkit-backdrop-filter: blur(5px);
+            border: 1px solid var(--main-accent);
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            box-shadow: 0 0 10px rgba(0, 217, 255, 0.1);
+        }
+        
+        /* Confirm Button with flying icon animation */
+        .confirm-btn-3d { 
+            position: relative;
+            overflow: hidden;
+            width: 100%; padding: 15px; background: var(--main-accent); color: white; border: none; border-radius: 10px; font-size: 16px; font-weight: bold; box-shadow: 0 5px 15px rgba(0,0,0,0.3); margin-top: 10px; cursor: pointer; 
+        }
+        
+        /* Icon inside the button */
+        .confirm-btn-3d i {
+            margin-right: 5px;
+            transition: all 0.3s;
+        }
+        
+        /* Flying Icon Container (Added temporarily on click) */
+        .flying-icon-container {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            font-size: 30px; /* Larger icon */
+            color: #25D366; 
+            z-index: 9000;
+            opacity: 0;
+            animation: fly-out 0.8s ease-out forwards;
+        }
+        
+        @keyframes fly-out {
+            0% { opacity: 1; transform: translate(-50%, -50%) scale(1); }
+            100% { opacity: 0; transform: translate(calc(100vw - 50%), -100vh) scale(1.5); } /* Flies off the top-right corner */
+        }
 
         /* Cart & Order Styling */
         .cart-item { display: flex; align-items: center; justify-content: space-between; background: var(--card-bg); padding: 10px; border-radius: 10px; margin-bottom: 10px; border: 1px solid var(--border-color); }
@@ -410,6 +555,7 @@
             <div class="splash-logo-text">RUHI TEXTILES</div>
             <div class="splash-tagline">Quality and Trust</div>
         </div>
+        <div class="dynamic-loader"></div>
     </div>
 
     <div id="globalLoader"><div class="loader-spinner"></div></div>
@@ -442,7 +588,14 @@
     
     <div id="screen-search" class="app-screen">
         <h3 class="section-title">Search</h3>
-        <input type="text" id="searchInput" class="input-glow-fancy" placeholder="Search products..." onkeyup="filterProducts()">
+        
+        <div class="search-container-glow">
+            <div class="form-group search-inner-wrap">
+                <i class="fas fa-search"></i>
+                <input type="text" id="searchInput" class="input-glow-fancy" placeholder="Search products..." onkeyup="filterProducts()">
+            </div>
+        </div>
+        
         <div id="searchResultsArea" class="grid"></div>
     </div>
     
@@ -472,6 +625,15 @@
             <span>🔥 New Arrivals</span>
             <i class="fas fa-arrow-left" onclick="showHome()" style="font-size:20px; cursor:pointer;"></i>
         </h3>
+        
+        <div style="margin-bottom: 15px; display: flex; justify-content: flex-end;">
+            <select id="sortNewArrivals" onchange="sortProducts('new')" style="padding: 8px; border-radius: 5px; background: var(--card-bg); color: var(--text-color); border: 1px solid var(--border-color);">
+                <option value="default">Sort By</option>
+                <option value="price-asc">Price: Low to High</option>
+                <option value="price-desc">Price: High to Low</option>
+            </select>
+        </div>
+        
         <div class="grid" id="new-container"></div>
     </div>
 
@@ -483,6 +645,15 @@
             </div>
             <i class="fas fa-arrow-left" onclick="showHome()" style="font-size:20px; cursor:pointer;"></i>
         </h3>
+        
+        <div style="margin-bottom: 15px; display: flex; justify-content: flex-end;">
+            <select id="sortBestSelling" onchange="sortProducts('best')" style="padding: 8px; border-radius: 5px; background: var(--card-bg); color: var(--text-color); border: 1px solid var(--border-color);">
+                <option value="default">Sort By</option>
+                <option value="price-asc">Price: Low to High</option>
+                <option value="price-desc">Price: High to Low</option>
+            </select>
+        </div>
+        
         <div class="grid" id="best-container"></div>
     </div>
 
@@ -525,16 +696,21 @@
         <div class="close-btn" onclick="closePopup('formPopup')"><i class="fas fa-arrow-left"></i></div>
         <div class="popup-content premium-form-container">
             <h2 class="section-title">Delivery Details</h2>
-            <div style="background:rgba(0,217,255,0.1); padding:15px; border-radius:10px; margin-bottom:20px; border:1px solid var(--main-accent);">
+            
+            <div class="item-details-box">
                 <p style="color:var(--text-light); font-size:12px; margin:0;">ITEM:</p>
                 <h3 id="formProd" style="color:var(--text-color); margin:5px 0;">Product</h3>
                 <h3 id="formPrice" style="color:var(--main-accent); margin:0;">₹ Price</h3>
             </div>
+            
             <div class="form-group"><i class="fas fa-user"></i><input type="text" id="cName" class="input-glow-fancy" placeholder="Full Name"></div>
             <div class="form-group"><i class="fas fa-phone"></i><input type="tel" id="cPhone" class="input-glow-fancy" placeholder="WhatsApp Number"></div>
             <div class="form-group"><i class="fas fa-home"></i><input type="text" id="cAddress" class="input-glow-fancy" placeholder="Full Address"></div>
             <div class="form-group"><i class="fas fa-map-pin"></i><input type="number" id="cPin" class="input-glow-fancy" placeholder="Pincode"></div>
-            <button class="confirm-btn-3d" onclick="sendWhatsapp()">Confirm & Send</button>
+            
+            <button class="confirm-btn-3d" onclick="sendWhatsapp(event)">
+                <i class="fas fa-paper-plane"></i> Confirm & Send
+            </button>
         </div>
     </div>
 
@@ -606,7 +782,7 @@
     
     <div id="contactPopup" class="popup">
         <div class="close-btn" onclick="closePopup('contactPopup')"><i class="fas fa-arrow-left"></i></div>
-        <div class="popup-content"><h2 class="section-title">Contact</h2><button class="confirm-btn-3d" style="background:#25D366" onclick="openExternalLink('https://wa.me/919157207812')">Chat on WhatsApp</button></div>
+        <div class="popup-content"><h2 class="section-title">Contact</h2><button class="confirm-btn-3d" style="background:#25D366" onclick="openExternalLink('https://wa.me/919157207812')"><i class="fab fa-whatsapp"></i> Chat on WhatsApp</button></div>
     </div>
     
     <div id="aboutPopup" class="popup">
@@ -684,15 +860,19 @@
             { id: 309, name: "Star01 - Grey Silk Blouse", price: 300, cat: "new", img: "IMG-20251215-WA0009.jpg" },
             { id: 310, name: "Star01 - Orange Silk Blouse", price: 300, cat: "new", img: "IMG-20251215-WA0010.jpg" },
             { id: 311, name: "Star01 - Golden Silk Blouse", price: 300, cat: "new", img: "IMG-20251215-WA0011.jpg" },
-            { id: 312, name: "Star01 - Turquoise Silk Blouse", price: 300, cat: "new", img: "IMG-20251215-WA0012.jpg" }
+            { id: 312, name: "Star01 - Turquoise Silk Blouse", price: 300, cat: "new", img: "IMG-20251215-WA0012.jpg" },
+            /* --- NEW IMAGES ADDED --- */
+            { id: 313, name: "Star01 - New Blouse Design A", price: 300, cat: "new", img: "IMG-20251215-WA0029.jpg" },
+            { id: 314, name: "Star01 - New Blouse Design B", price: 300, cat: "new", img: "IMG-20251215-WA0027.jpg" },
+            { id: 315, name: "Star01 - New Blouse Design C", price: 300, cat: "new", img: "IMG-20251215-WA0017.jpg" }
         ];
 
         let cart = JSON.parse(localStorage.getItem('ruhiCart')) || [];
         let orders = JSON.parse(localStorage.getItem('ruhiOrders')) || [];
 
         function initApp() {
-            // Start the splash screen animation
-            setTimeout(hideSplashAndShowHome, 2500); 
+            // Start the splash screen animation (4000ms = 4 seconds)
+            setTimeout(hideSplashAndShowHome, 4000); 
             setInitialTheme();
             checkLogin();
             renderProducts();
@@ -704,8 +884,6 @@
             splash.style.opacity = '0';
             setTimeout(() => {
                 splash.style.display = 'none';
-                // Only show Home Screen after splash is fully hidden
-                // Initial showHome() call no longer needs a loader timeout because splash handles initial delay
                 showHome(false); 
             }, 500); 
         }
@@ -814,7 +992,7 @@
                 hideAllScreens(); 
                 closeAll(); 
                 document.getElementById('screen-new').style.display = 'block'; 
-                renderProducts(); // Re-render to apply shine class
+                renderProducts(); 
                 hideLoader(); 
             }, 500); 
         }
@@ -858,6 +1036,44 @@
                 hideLoader();
             }, 500);
         }
+        
+        // --- SORTING FUNCTION ---
+        function sortProducts(category) {
+            const selectId = `sort${category.charAt(0).toUpperCase() + category.slice(1)}`;
+            const containerId = `${category}-container`;
+            const sortValue = document.getElementById(selectId).value;
+            
+            let categoryProducts = products.filter(p => p.cat === category);
+
+            if (sortValue === 'price-asc') {
+                categoryProducts.sort((a, b) => a.price - b.price);
+            } else if (sortValue === 'price-desc') {
+                categoryProducts.sort((a, b) => b.price - a.price);
+            }
+            
+            // Re-render only the sorted category
+            renderSpecificCategory(categoryProducts, document.getElementById(containerId));
+        }
+
+        function renderSpecificCategory(productsArray, containerElement) {
+             containerElement.innerHTML = '';
+             const createCard = (p) => {
+                const isInCart = getCartStatus(p.id);
+                const addCartAction = `event.stopPropagation(); addToCart(${p.id}, event)`;
+                const buyAction = `event.stopPropagation(); openForm(${p.id})`;
+                const shineClass = (p.cat === 'new') ? 'shine-new' : '';
+
+                return `
+                    <div class="card ${shineClass}" onclick="openDetails(${p.id})">
+                        <img src="${p.img}" loading="lazy" onerror="this.src='https://via.placeholder.com/300/222/00d9ff?text=Ruhi'"><div class="card-content"><h3>${p.name}</h3><p>₹${p.price}</p>
+                        <div class="row">
+                            <button class="btn-action btn-view-dt" onclick="${addCartAction}">Add to Cart</button>
+                            <button class="btn-action btn-add" onclick="${buyAction}">Buy Now</button>
+                        </div></div></div>`;
+            };
+            productsArray.forEach(p => { containerElement.innerHTML += createCard(p); });
+        }
+
 
         /* --- LOADER MANAGEMENT --- */
         let loadingTimeout;
@@ -908,39 +1124,29 @@
         function clearCartConfirm() { if(confirm("Empty Cart?")) { cart = []; localStorage.setItem('ruhiCart', JSON.stringify(cart)); updateCartCount(); renderCartItems(); } }
 
         function renderProducts() {
-            const containers = { 
-                'ajrakh': document.getElementById('ajrakh-container'), 
-                'others': document.getElementById('others-container'), 
-                'new': document.getElementById('new-container'),
-                'best': document.getElementById('best-container'),
-                'search': document.getElementById('searchResultsArea') 
+            const allProducts = { 
+                'ajrakh': products.filter(p => p.cat === 'ajrakh'), 
+                'others': products.filter(p => p.cat === 'others'), 
+                'new': products.filter(p => p.cat === 'new'),
+                'best': products.filter(p => p.cat === 'best'),
+                'search': products.filter(p => p.cat !== 'ajrakh' && p.cat !== 'others' && p.cat !== 'new' && p.cat !== 'best')
             };
-            Object.values(containers).forEach(c => { if(c) c.innerHTML = ''; });
-            const createCard = (p) => {
-                const isInCart = getCartStatus(p.id);
-                const addCartAction = `event.stopPropagation(); addToCart(${p.id}, event)`;
-                const buyAction = `event.stopPropagation(); openForm(${p.id})`;
-                
-                // Add shine class only to New Arrivals cards
-                const shineClass = (p.cat === 'new') ? 'shine-new' : '';
 
-                return `
-                    <div class="card ${shineClass}" onclick="openDetails(${p.id})">
-                        <img src="${p.img}" loading="lazy" onerror="this.src='https://via.placeholder.com/300/222/00d9ff?text=Ruhi'"><div class="card-content"><h3>${p.name}</h3><p>₹${p.price}</p>
-                        <div class="row">
-                            <button class="btn-action btn-view-dt" onclick="${addCartAction}">Add to Cart</button>
-                            <button class="btn-action btn-add" onclick="${buyAction}">Buy Now</button>
-                        </div></div></div>`;
-            };
-            products.forEach(p => { if(containers[p.cat]) containers[p.cat].innerHTML += createCard(p); });
+            for (const category in allProducts) {
+                const containerElement = document.getElementById(`${category}-container`);
+                if (containerElement) {
+                    renderSpecificCategory(allProducts[category], containerElement);
+                }
+            }
         }
+        
         function filterProducts() {
             const val = document.getElementById('searchInput').value.toLowerCase();
             const grid = document.getElementById('searchResultsArea'); grid.innerHTML = '';
             if(val.length < 2) return;
             const found = products.filter(p => p.name.toLowerCase().includes(val) || p.cat.includes(val));
             if(found.length === 0) grid.innerHTML = '<p style="color:var(--text-light); text-align:center;">No matches.</p>';
-            found.forEach(p => { grid.innerHTML += `<div class="card" onclick="openDetails(${p.id})"><img src="${p.img}" onerror="this.src='https://via.placeholder.com/300'"><div class="card-content"><h3>${p.name}</h3><p>₹${p.price}</p><div class="row"><button class="btn-action btn-view-dt" onclick="event.stopPropagation(); addToCart(${p.id}, event)">Add to Cart</button><button class="btn-action btn-add" onclick="event.stopPropagation(); openForm(${p.id})">Buy Now</button></div></div></div>`; });
+            renderSpecificCategory(found, grid);
         }
 
         let selProd = null;
@@ -1026,7 +1232,7 @@
             cart = []; localStorage.setItem('ruhiCart', JSON.stringify(cart)); updateCartCount(); showHome();
         }
         
-        function sendWhatsapp() {
+        function sendWhatsapp(event) {
             let name = document.getElementById('cName').value;
             let phone = document.getElementById('cPhone').value;
             let address = document.getElementById('cAddress').value;
@@ -1037,6 +1243,22 @@
                 return; 
             }
 
+            // 1. Trigger flying icon animation
+            const buttonRect = event.target.getBoundingClientRect();
+            const flyElement = document.createElement('div');
+            flyElement.className = 'flying-icon-container';
+            flyElement.innerHTML = '<i class="fas fa-paper-plane"></i>';
+            
+            // Set starting position (Center of the button)
+            flyElement.style.top = buttonRect.top + buttonRect.height / 2 + 'px';
+            flyElement.style.left = buttonRect.left + buttonRect.width / 2 + 'px';
+            
+            document.body.appendChild(flyElement);
+            
+            // Clean up the flying element after animation
+            setTimeout(() => flyElement.remove(), 800);
+            
+            // 2. Prepare WhatsApp message
             let msg = `*NEW ORDER (BUY NOW)*%0A`;
             msg += `------------------------------%0A`;
             msg += `*PRODUCT:* ${selProd.name}%0A`;
@@ -1048,12 +1270,15 @@
             msg += `*Address:* ${address}%0A`;
             msg += `*Pincode:* ${pin}%0A`;
 
-            // Record order history
+            // 3. Record order history
             orders.unshift({ date: new Date().toLocaleDateString(), items: [selProd.name], total: selProd.price });
             localStorage.setItem('ruhiOrders', JSON.stringify(orders));
 
-            window.open(`https://wa.me/919157207812?text=${msg}`, '_blank'); 
-            closeAll();
+            // 4. Send WhatsApp message and close form
+            setTimeout(() => {
+                window.open(`https://wa.me/919157207812?text=${msg}`, '_blank'); 
+                closeAll();
+            }, 300); // Give a slight delay for the icon animation to start
         }
 
         function animateToCart(el) {
